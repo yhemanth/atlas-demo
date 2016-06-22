@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableSet;
 import org.apache.atlas.AtlasClient;
 import org.apache.atlas.AtlasServiceException;
 import org.apache.atlas.typesystem.TypesDef;
-import org.apache.atlas.typesystem.json.InstanceSerialization;
 import org.apache.atlas.typesystem.json.TypesSerialization;
 import org.apache.atlas.typesystem.types.AttributeDefinition;
 import org.apache.atlas.typesystem.types.ClassType;
@@ -38,7 +37,19 @@ public class AtlasTypesDemo {
     }
 
     private void run() throws AtlasServiceException {
+        listTypes();
+        createNewTypes();
+        listTypes();
+    }
 
+    private void listTypes() throws AtlasServiceException {
+        List<String> types = atlasClient.listTypes();
+        for (String type : types) {
+            System.out.println("Type: " + type);
+        }
+    }
+
+    private void createNewTypes() throws AtlasServiceException {
         HierarchicalTypeDefinition<ClassType> namespaceType =
                 TypesUtil.createClassTypeDef(HBASE_NAMESPACE_TYPE, ImmutableSet.of(ASSET_TYPE));
         HierarchicalTypeDefinition<ClassType> columnType =
@@ -56,10 +67,15 @@ public class AtlasTypesDemo {
                     new AttributeDefinition("namespace", HBASE_NAMESPACE_TYPE, Multiplicity.REQUIRED, false, null),
                     new AttributeDefinition("status", DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
                     new AttributeDefinition("columnFamilies", DataTypes.arrayTypeName(HBASE_COLUMN_FAMILY_TYPE), Multiplicity.COLLECTION, true, null));
-        TypesDef typesDef = TypesUtil.getTypesDef(ImmutableList.<EnumTypeDefinition>of(), ImmutableList.<StructTypeDefinition>of(),
+        TypesDef hbaseTypes = TypesUtil.getTypesDef(ImmutableList.<EnumTypeDefinition>of(), ImmutableList.<StructTypeDefinition>of(),
                 ImmutableList.<HierarchicalTypeDefinition<TraitType>>of(),
                 ImmutableList.of(namespaceType, columnType, columnFamilyType, tableType));
-        String typesAsString = TypesSerialization.toJson(typesDef);
+        String typesAsString = TypesSerialization.toJson(hbaseTypes);
         System.out.println(typesAsString);
+
+        List<String> typesCreated = atlasClient.createType(hbaseTypes);
+        for (String typeCreated : typesCreated) {
+            System.out.println("TypeCreated: " + typeCreated);
+        }
     }
 }
