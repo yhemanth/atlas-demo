@@ -38,18 +38,35 @@ public class AtlasTypesDemo {
 
     private void run() throws AtlasServiceException {
         listTypes();
+        listAType();
         createNewTypes();
         listTypes();
     }
 
+    private void listAType() throws AtlasServiceException {
+        System.out.println("Printing type definition for type: " + ASSET_TYPE);
+        TypesDef type = atlasClient.getType(ASSET_TYPE);
+        String typeJson = TypesSerialization.toJson(type);
+        System.out.println("Type definition for type: " + ASSET_TYPE);
+        System.out.println(typeJson);
+        printDelimiter();
+    }
+
     private void listTypes() throws AtlasServiceException {
+        System.out.println("Types registered with Atlas:");
         List<String> types = atlasClient.listTypes();
         for (String type : types) {
             System.out.println("Type: " + type);
         }
+        printDelimiter();
+    }
+
+    private void printDelimiter() {
+        System.out.println("============================================");
     }
 
     private void createNewTypes() throws AtlasServiceException {
+        System.out.println("Creating new types");
         HierarchicalTypeDefinition<ClassType> namespaceType =
                 TypesUtil.createClassTypeDef(HBASE_NAMESPACE_TYPE, ImmutableSet.of(ASSET_TYPE));
         HierarchicalTypeDefinition<ClassType> columnType =
@@ -77,5 +94,6 @@ public class AtlasTypesDemo {
         for (String typeCreated : typesCreated) {
             System.out.println("TypeCreated: " + typeCreated);
         }
+        printDelimiter();
     }
 }
