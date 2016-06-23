@@ -22,7 +22,6 @@ public class AtlasTypesDemo {
 
     public static final String HBASE_NAMESPACE_TYPE = "hbase_namespace";
     public static final String HBASE_TABLE_TYPE = "hbase_table";
-    public static final String ASSET_TYPE = "Asset";
     public static final String HBASE_COLUMN_TYPE = "hbase_column";
     public static final String HBASE_COLUMN_FAMILY_TYPE = "hbase_column_family";
     private final AtlasClient atlasClient;
@@ -44,10 +43,10 @@ public class AtlasTypesDemo {
     }
 
     private void listAType() throws AtlasServiceException {
-        System.out.println("Printing type definition for type: " + ASSET_TYPE);
-        TypesDef type = atlasClient.getType(ASSET_TYPE);
+        System.out.println("Printing type definition for type: " + AtlasClient.ASSET_TYPE);
+        TypesDef type = atlasClient.getType(AtlasClient.ASSET_TYPE);
         String typeJson = TypesSerialization.toJson(type);
-        System.out.println("Type definition for type: " + ASSET_TYPE);
+        System.out.println("Type definition for type: " + AtlasClient.ASSET_TYPE);
         System.out.println(typeJson);
         printDelimiter();
     }
@@ -68,19 +67,22 @@ public class AtlasTypesDemo {
     private void createNewTypes() throws AtlasServiceException {
         System.out.println("Creating new types");
         HierarchicalTypeDefinition<ClassType> namespaceType =
-                TypesUtil.createClassTypeDef(HBASE_NAMESPACE_TYPE, ImmutableSet.of(ASSET_TYPE));
+                TypesUtil.createClassTypeDef(HBASE_NAMESPACE_TYPE, ImmutableSet.of(AtlasClient.REFERENCEABLE_SUPER_TYPE, AtlasClient.ASSET_TYPE));
         HierarchicalTypeDefinition<ClassType> columnType =
-                TypesUtil.createClassTypeDef(HBASE_COLUMN_TYPE, ImmutableSet.of(ASSET_TYPE),
+                TypesUtil.createClassTypeDef(HBASE_COLUMN_TYPE, ImmutableSet.of(AtlasClient.REFERENCEABLE_SUPER_TYPE, AtlasClient.ASSET_TYPE),
                     new AttributeDefinition("type", DataTypes.STRING_TYPE.getName(), Multiplicity.REQUIRED, false, null));
         HierarchicalTypeDefinition<ClassType> columnFamilyType =
-                TypesUtil.createClassTypeDef(HBASE_COLUMN_FAMILY_TYPE, ImmutableSet.of(ASSET_TYPE),
+                TypesUtil.createClassTypeDef(HBASE_COLUMN_FAMILY_TYPE, ImmutableSet.of(AtlasClient.REFERENCEABLE_SUPER_TYPE, AtlasClient.ASSET_TYPE),
                     new AttributeDefinition("versions", DataTypes.INT_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
                     new AttributeDefinition("inMemory", DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
                     new AttributeDefinition("blockSize", DataTypes.INT_TYPE.getName(), Multiplicity.REQUIRED, false, null),
                     new AttributeDefinition("compression", DataTypes.STRING_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
                     new AttributeDefinition("columns", DataTypes.arrayTypeName(HBASE_COLUMN_TYPE), Multiplicity.COLLECTION, false, null));
         HierarchicalTypeDefinition<ClassType> tableType =
-                TypesUtil.createClassTypeDef(HBASE_TABLE_TYPE, ImmutableSet.of("DataSet"),
+                // In older builds, there was no Asset type, and DataSet was not extending Asset. If used with those
+                // builds, we need to define both DataSet and Asset as supertypes.
+                // TypesUtil.createClassTypeDef(HBASE_TABLE_TYPE, ImmutableSet.of(AtlasClient.DATA_SET_SUPER_TYPE),
+                TypesUtil.createClassTypeDef(HBASE_TABLE_TYPE, ImmutableSet.of(AtlasClient.DATA_SET_SUPER_TYPE, AtlasClient.ASSET_TYPE),
                     new AttributeDefinition("namespace", HBASE_NAMESPACE_TYPE, Multiplicity.REQUIRED, false, null),
                     new AttributeDefinition("status", DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
                     new AttributeDefinition("columnFamilies", DataTypes.arrayTypeName(HBASE_COLUMN_FAMILY_TYPE), Multiplicity.COLLECTION, true, null));
