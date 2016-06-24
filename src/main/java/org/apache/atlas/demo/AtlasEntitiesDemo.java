@@ -97,7 +97,7 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         webTable.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, WEBTABLE_NAME);
         webTable.set(AtlasClient.NAME, "webtable");
         webTable.set(AtlasClient.DESCRIPTION, "Table that stores crawled information");
-        webTable.set(TABLE_ATTRIBUTE_STATUS, "enabled");
+        webTable.set(TABLE_ATTRIBUTE_IS_ENABLED, true);
         webTable.set(TABLE_ATTRIBUTE_NAMESPACE, new Referenceable(namespaceId, HBASE_NAMESPACE_TYPE, null));
         webTable.set(TABLE_ATTRIBUTE_COLUMN_FAMILIES, Arrays.asList(anchorCf, contentsCf));
 

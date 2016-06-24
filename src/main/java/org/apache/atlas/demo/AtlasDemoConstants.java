@@ -12,7 +12,7 @@ public interface AtlasDemoConstants {
     String CF_ATTRIBUTE_COMPRESSION = "compression";
     String CF_ATTRIBUTE_COLUMNS = "columns";
     String TABLE_ATTRIBUTE_NAMESPACE = "namespace";
-    String TABLE_ATTRIBUTE_STATUS = "status";
+    String TABLE_ATTRIBUTE_IS_ENABLED = "isEnabled";
     String TABLE_ATTRIBUTE_COLUMN_FAMILIES = "columnFamilies";
 
 }
