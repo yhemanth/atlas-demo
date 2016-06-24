@@ -32,6 +32,22 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         retrieveEntity(tableId);
         retrieveEntityByUniqueAttribute(HBASE_TABLE_TYPE, AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME,
                 WEBTABLE_NAME);
+        updateEntity(tableId);
+        retrieveEntity(tableId);
+    }
+
+    private void updateEntity(String tableId) throws AtlasServiceException {
+        System.out.println("Updating table state to disabled");
+        Referenceable tableEntity = new Referenceable(HBASE_TABLE_TYPE);
+        tableEntity.set(TABLE_ATTRIBUTE_IS_ENABLED, false);
+        String entityJson = InstanceSerialization.toJson(tableEntity, true);
+        System.out.println(entityJson);
+        AtlasClient.EntityResult entityResult = atlasClient.updateEntity(tableId, tableEntity);
+        List<String> updateEntities = entityResult.getUpdateEntities();
+        for (String entity : updateEntities) {
+            System.out.println("Updated Entity ID: " + entity);
+        }
+        Utils.printDelimiter();
     }
 
     private void retrieveEntityByUniqueAttribute(
