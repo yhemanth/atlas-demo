@@ -34,6 +34,17 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
                 WEBTABLE_NAME);
         updateEntity(tableId);
         retrieveEntity(tableId);
+        deleteEntity(tableId);
+        retrieveEntity(tableId);
+    }
+
+    private void deleteEntity(String id) throws AtlasServiceException {
+        System.out.println("Deleting entity with GUID: " + id);
+        AtlasClient.EntityResult entityResult = atlasClient.deleteEntities(id);
+        for (String entity : entityResult.getDeletedEntities()) {
+            System.out.println("Entity deleted: " + entity);
+        }
+        Utils.printDelimiter();
     }
 
     private void updateEntity(String tableId) throws AtlasServiceException {
