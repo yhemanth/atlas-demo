@@ -44,7 +44,7 @@ public class AtlasTypesDemo implements AtlasDemoConstants {
         String typeJson = TypesSerialization.toJson(type);
         System.out.println("Type definition for type: " + AtlasClient.ASSET_TYPE);
         System.out.println(typeJson);
-        printDelimiter();
+        Utils.printDelimiter();
     }
 
     private void listTypes() throws AtlasServiceException {
@@ -53,11 +53,7 @@ public class AtlasTypesDemo implements AtlasDemoConstants {
         for (String type : types) {
             System.out.println("Type: " + type);
         }
-        printDelimiter();
-    }
-
-    private void printDelimiter() {
-        System.out.println("============================================");
+        Utils.printDelimiter();
     }
 
     private void createNewTypes() throws AtlasServiceException {
@@ -91,6 +87,6 @@ public class AtlasTypesDemo implements AtlasDemoConstants {
         for (String typeCreated : typesCreated) {
             System.out.println("TypeCreated: " + typeCreated);
         }
-        printDelimiter();
+        Utils.printDelimiter();
     }
 }

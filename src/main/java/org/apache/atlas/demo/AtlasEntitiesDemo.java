@@ -25,10 +25,21 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
 
     private void run() throws AtlasServiceException, JSONException {
         String namespaceId = createNamespace();
-        createTable(namespaceId);
+        String tableId = createTable(namespaceId);
+        retrieveEntity(namespaceId);
+        retrieveEntity(tableId);
     }
 
-    private void createTable(String namespaceId) throws AtlasServiceException, JSONException {
+    private void retrieveEntity(String guid) throws AtlasServiceException {
+        System.out.println("Retrieving entity with GUID: " + guid);
+        Referenceable entity = atlasClient.getEntity(guid);
+        String entityJson = InstanceSerialization.toJson(entity, true);
+        System.out.println(entityJson);
+        Utils.printDelimiter();
+    }
+
+    private String createTable(String namespaceId) throws AtlasServiceException, JSONException {
+        System.out.println("Creating Table, Column Family & Column entities");
         Referenceable cssNsiColumn = new Referenceable(HBASE_COLUMN_TYPE);
         cssNsiColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor.cssnsi@cluster");
         cssNsiColumn.set(AtlasClient.NAME, "cssnsi");
@@ -92,9 +103,12 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         for (String entity : entitiesCreated) {
             System.out.println("Entity created: " + entity);
         }
+        Utils.printDelimiter();
+        return entitiesCreated.get(entitiesCreated.size()-1);
     }
 
     private String createNamespace() throws AtlasServiceException {
+        System.out.println("Creating namespace entity");
         Referenceable hbaseNamespace = new Referenceable(HBASE_NAMESPACE_TYPE);
         hbaseNamespace.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default@cluster1");
         hbaseNamespace.set(AtlasClient.NAME, "default");
@@ -107,6 +121,7 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         for (String entity : entitiesCreated) {
             System.out.println("Entity created: " + entity);
         }
+        Utils.printDelimiter();
         return entitiesCreated.get(0);
     }
 }
