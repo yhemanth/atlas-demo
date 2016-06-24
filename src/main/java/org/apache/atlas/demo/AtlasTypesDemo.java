@@ -18,12 +18,8 @@ import org.apache.atlas.typesystem.types.utils.TypesUtil;
 
 import java.util.List;
 
-public class AtlasTypesDemo {
+public class AtlasTypesDemo implements AtlasDemoConstants {
 
-    public static final String HBASE_NAMESPACE_TYPE = "hbase_namespace";
-    public static final String HBASE_TABLE_TYPE = "hbase_table";
-    public static final String HBASE_COLUMN_TYPE = "hbase_column";
-    public static final String HBASE_COLUMN_FAMILY_TYPE = "hbase_column_family";
     private final AtlasClient atlasClient;
 
     public AtlasTypesDemo(String atlasServiceUrl) {
@@ -70,22 +66,21 @@ public class AtlasTypesDemo {
                 TypesUtil.createClassTypeDef(HBASE_NAMESPACE_TYPE, ImmutableSet.of(AtlasClient.REFERENCEABLE_SUPER_TYPE, AtlasClient.ASSET_TYPE));
         HierarchicalTypeDefinition<ClassType> columnType =
                 TypesUtil.createClassTypeDef(HBASE_COLUMN_TYPE, ImmutableSet.of(AtlasClient.REFERENCEABLE_SUPER_TYPE, AtlasClient.ASSET_TYPE),
-                    new AttributeDefinition("type", DataTypes.STRING_TYPE.getName(), Multiplicity.REQUIRED, false, null));
+                    new AttributeDefinition(COLUMN_ATTRIBUTE_TYPE, DataTypes.STRING_TYPE.getName(), Multiplicity.REQUIRED, false, null));
         HierarchicalTypeDefinition<ClassType> columnFamilyType =
                 TypesUtil.createClassTypeDef(HBASE_COLUMN_FAMILY_TYPE, ImmutableSet.of(AtlasClient.REFERENCEABLE_SUPER_TYPE, AtlasClient.ASSET_TYPE),
-                    new AttributeDefinition("versions", DataTypes.INT_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
-                    new AttributeDefinition("inMemory", DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
-                    new AttributeDefinition("blockSize", DataTypes.INT_TYPE.getName(), Multiplicity.REQUIRED, false, null),
-                    new AttributeDefinition("compression", DataTypes.STRING_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
-                    new AttributeDefinition("columns", DataTypes.arrayTypeName(HBASE_COLUMN_TYPE), Multiplicity.COLLECTION, false, null));
+                    new AttributeDefinition(CF_ATTRIBUTE_VERSIONS, DataTypes.INT_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
+                    new AttributeDefinition(CF_ATTRIBUTE_IN_MEMORY, DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
+                    new AttributeDefinition(CF_ATTRIBUTE_BLOCK_SIZE, DataTypes.INT_TYPE.getName(), Multiplicity.REQUIRED, false, null),
+                    new AttributeDefinition(CF_ATTRIBUTE_COMPRESSION, DataTypes.STRING_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
+                    new AttributeDefinition(CF_ATTRIBUTE_COLUMNS, DataTypes.arrayTypeName(HBASE_COLUMN_TYPE), Multiplicity.COLLECTION, false, null));
         HierarchicalTypeDefinition<ClassType> tableType =
                 // In older builds, there was no Asset type, and DataSet was not extending Asset. If used with those
                 // builds, we need to define both DataSet and Asset as supertypes.
-                // TypesUtil.createClassTypeDef(HBASE_TABLE_TYPE, ImmutableSet.of(AtlasClient.DATA_SET_SUPER_TYPE),
-                TypesUtil.createClassTypeDef(HBASE_TABLE_TYPE, ImmutableSet.of(AtlasClient.DATA_SET_SUPER_TYPE, AtlasClient.ASSET_TYPE),
-                    new AttributeDefinition("namespace", HBASE_NAMESPACE_TYPE, Multiplicity.REQUIRED, false, null),
-                    new AttributeDefinition("status", DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
-                    new AttributeDefinition("columnFamilies", DataTypes.arrayTypeName(HBASE_COLUMN_FAMILY_TYPE), Multiplicity.COLLECTION, true, null));
+                 TypesUtil.createClassTypeDef(HBASE_TABLE_TYPE, ImmutableSet.of(AtlasClient.DATA_SET_SUPER_TYPE),
+                    new AttributeDefinition(TABLE_ATTRIBUTE_NAMESPACE, HBASE_NAMESPACE_TYPE, Multiplicity.REQUIRED, false, null),
+                    new AttributeDefinition(TABLE_ATTRIBUTE_STATUS, DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
+                    new AttributeDefinition(TABLE_ATTRIBUTE_COLUMN_FAMILIES, DataTypes.arrayTypeName(HBASE_COLUMN_FAMILY_TYPE), Multiplicity.COLLECTION, true, null));
         TypesDef hbaseTypes = TypesUtil.getTypesDef(ImmutableList.<EnumTypeDefinition>of(), ImmutableList.<StructTypeDefinition>of(),
                 ImmutableList.<HierarchicalTypeDefinition<TraitType>>of(),
                 ImmutableList.of(namespaceType, columnType, columnFamilyType, tableType));
