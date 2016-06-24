@@ -12,6 +12,7 @@ import java.util.List;
 
 public class AtlasEntitiesDemo implements AtlasDemoConstants {
 
+    public static final String WEBTABLE_NAME = "default.webtable@cluster1";
     private final AtlasClient atlasClient;
 
     public AtlasEntitiesDemo(String atlasServiceUrl) {
@@ -28,6 +29,18 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         String tableId = createTable(namespaceId);
         retrieveEntity(namespaceId);
         retrieveEntity(tableId);
+        retrieveEntityByUniqueAttribute(HBASE_TABLE_TYPE, AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME,
+                WEBTABLE_NAME);
+    }
+
+    private void retrieveEntityByUniqueAttribute(
+            String typeName, String uniqueAttributeName, String uniqueAttributeValue) throws AtlasServiceException {
+        System.out.println("Retrieving entity with type: "
+                + typeName + "/" + uniqueAttributeName+"=" + uniqueAttributeValue);
+        Referenceable entity = atlasClient.getEntity(typeName, uniqueAttributeName, uniqueAttributeValue);
+        String entityJson = InstanceSerialization.toJson(entity, true);
+        System.out.println(entityJson);
+        Utils.printDelimiter();
     }
 
     private void retrieveEntity(String guid) throws AtlasServiceException {
@@ -41,25 +54,25 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
     private String createTable(String namespaceId) throws AtlasServiceException, JSONException {
         System.out.println("Creating Table, Column Family & Column entities");
         Referenceable cssNsiColumn = new Referenceable(HBASE_COLUMN_TYPE);
-        cssNsiColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor.cssnsi@cluster");
+        cssNsiColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor.cssnsi@cluster1");
         cssNsiColumn.set(AtlasClient.NAME, "cssnsi");
         cssNsiColumn.set(AtlasClient.OWNER, "crawler");
         cssNsiColumn.set(COLUMN_ATTRIBUTE_TYPE, "string");
 
         Referenceable myLookCaColumn = new Referenceable(HBASE_COLUMN_TYPE);
-        myLookCaColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor.mylookca@cluster");
+        myLookCaColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor.mylookca@cluster1");
         myLookCaColumn.set(AtlasClient.NAME, "mylookca");
         myLookCaColumn.set(AtlasClient.OWNER, "crawler");
         myLookCaColumn.set(COLUMN_ATTRIBUTE_TYPE, "string");
 
         Referenceable htmlColumn = new Referenceable(HBASE_COLUMN_TYPE);
-        htmlColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.contents.html@cluster");
+        htmlColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.contents.html@cluster1");
         htmlColumn.set(AtlasClient.NAME, "html");
         htmlColumn.set(AtlasClient.OWNER, "crawler");
         htmlColumn.set(COLUMN_ATTRIBUTE_TYPE, "byte[]");
 
         Referenceable anchorCf = new Referenceable(HBASE_COLUMN_FAMILY_TYPE);
-        anchorCf.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor@cluster");
+        anchorCf.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor@cluster1");
         anchorCf.set(AtlasClient.NAME, "anchor");
         anchorCf.set(AtlasClient.DESCRIPTION, "The anchor column family that stores all links");
         anchorCf.set(AtlasClient.OWNER, "crawler");
@@ -70,7 +83,7 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         anchorCf.set(CF_ATTRIBUTE_COLUMNS, Arrays.asList(cssNsiColumn, myLookCaColumn));
 
         Referenceable contentsCf = new Referenceable(HBASE_COLUMN_FAMILY_TYPE);
-        contentsCf.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.contents@cluster");
+        contentsCf.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.contents@cluster1");
         contentsCf.set(AtlasClient.NAME, "contents");
         contentsCf.set(AtlasClient.DESCRIPTION, "The contents column family that stores the crawled content");
         contentsCf.set(AtlasClient.OWNER, "crawler");
@@ -81,7 +94,7 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         contentsCf.set(CF_ATTRIBUTE_COLUMNS, Arrays.asList(htmlColumn));
 
         Referenceable webTable = new Referenceable(HBASE_TABLE_TYPE);
-        webTable.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable@cluster");
+        webTable.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, WEBTABLE_NAME);
         webTable.set(AtlasClient.NAME, "webtable");
         webTable.set(AtlasClient.DESCRIPTION, "Table that stores crawled information");
         webTable.set(TABLE_ATTRIBUTE_STATUS, "enabled");
