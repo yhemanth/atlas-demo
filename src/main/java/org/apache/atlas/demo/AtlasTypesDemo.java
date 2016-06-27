@@ -77,9 +77,13 @@ public class AtlasTypesDemo implements AtlasDemoConstants {
                     new AttributeDefinition(TABLE_ATTRIBUTE_NAMESPACE, HBASE_NAMESPACE_TYPE, Multiplicity.REQUIRED, false, null),
                     new AttributeDefinition(TABLE_ATTRIBUTE_IS_ENABLED, DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
                     new AttributeDefinition(TABLE_ATTRIBUTE_COLUMN_FAMILIES, DataTypes.arrayTypeName(HBASE_COLUMN_FAMILY_TYPE), Multiplicity.COLLECTION, true, null));
+        HierarchicalTypeDefinition<ClassType> replicationProcessType =
+                TypesUtil.createClassTypeDef(HBASE_REPLICATION_PROCESS_TYPE, ImmutableSet.of(AtlasClient.PROCESS_SUPER_TYPE),
+                new AttributeDefinition(REPLICATION_SCHEDULE, DataTypes.STRING_TYPE.getName(), Multiplicity.REQUIRED, false, null),
+                new AttributeDefinition(REPLICATION_ENABLED, DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.REQUIRED, false, null));
         TypesDef hbaseTypes = TypesUtil.getTypesDef(ImmutableList.<EnumTypeDefinition>of(), ImmutableList.<StructTypeDefinition>of(),
                 ImmutableList.<HierarchicalTypeDefinition<TraitType>>of(),
-                ImmutableList.of(namespaceType, columnType, columnFamilyType, tableType));
+                ImmutableList.of(namespaceType, columnType, columnFamilyType, tableType, replicationProcessType));
         String typesAsString = TypesSerialization.toJson(hbaseTypes);
         System.out.println(typesAsString);
 

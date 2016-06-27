@@ -5,6 +5,8 @@ public interface AtlasDemoConstants {
     String HBASE_TABLE_TYPE = "hbase_table";
     String HBASE_COLUMN_TYPE = "hbase_column";
     String HBASE_COLUMN_FAMILY_TYPE = "hbase_column_family";
+    String HBASE_REPLICATION_PROCESS_TYPE = "hbase_replication_process";
+
     String COLUMN_ATTRIBUTE_TYPE = "type";
     String CF_ATTRIBUTE_VERSIONS = "versions";
     String CF_ATTRIBUTE_IN_MEMORY = "inMemory";
@@ -14,5 +16,6 @@ public interface AtlasDemoConstants {
     String TABLE_ATTRIBUTE_NAMESPACE = "namespace";
     String TABLE_ATTRIBUTE_IS_ENABLED = "isEnabled";
     String TABLE_ATTRIBUTE_COLUMN_FAMILIES = "columnFamilies";
-
+    String REPLICATION_SCHEDULE = "replicationSchedule";
+    String REPLICATION_ENABLED = "replicationEnabled";
 }
