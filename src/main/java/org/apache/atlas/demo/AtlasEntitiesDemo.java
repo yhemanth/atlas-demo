@@ -17,6 +17,9 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
     public static final String REMOTE_CLUSTER = "cluster2";
     public static final String LOCAL_WEBTABLE_NAME = "default.webtable@" + LOCAL_CLUSTER;
     public static final String REMOTE_WEBTABLE_NAME = "default.webtable@" + REMOTE_CLUSTER;
+    public static final String LOCAL_CONTENTS_CF_NAME = "default.webtable.contents@" + LOCAL_CLUSTER;
+    public static final String REMOTE_CONTENTS_CF_NAME = "default.webtable.contents@" + REMOTE_CLUSTER;
+
     private final AtlasClient atlasClient;
 
     public AtlasEntitiesDemo(String atlasServiceUrl) {
@@ -33,7 +36,7 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         String localNamespaceId = createNamespace(LOCAL_CLUSTER);
 
         // create multiple entities - table, column families, columns
-        String localTableId = createTable(localNamespaceId, LOCAL_CLUSTER, LOCAL_WEBTABLE_NAME);
+        String localTableId = createTable(localNamespaceId, LOCAL_CLUSTER, LOCAL_WEBTABLE_NAME, LOCAL_CONTENTS_CF_NAME);
 
         // retrieve entities (by GUID and unique attributes)
         retrieveEntity(localNamespaceId);
@@ -47,7 +50,7 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
 
         // add lineage related data
         String remoteNamespaceId = createNamespace(REMOTE_CLUSTER);
-        String remoteTableId= createTable(remoteNamespaceId, REMOTE_CLUSTER, REMOTE_WEBTABLE_NAME);
+        String remoteTableId= createTable(remoteNamespaceId, REMOTE_CLUSTER, REMOTE_WEBTABLE_NAME, REMOTE_CONTENTS_CF_NAME);
         String replicationProcessEntityId = createReplicationProcessEntity(localTableId, remoteTableId);
         retrieveEntity(replicationProcessEntityId);
 
@@ -118,7 +121,7 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         Utils.printDelimiter();
     }
 
-    private String createTable(String namespaceId, String clusterName, String tableName)
+    private String createTable(String namespaceId, String clusterName, String tableName, String contentsCfName)
             throws AtlasServiceException, JSONException {
         System.out.println("Creating Table, Column Family & Column entities");
         Referenceable cssNsiColumn = new Referenceable(HBASE_COLUMN_TYPE);
@@ -153,7 +156,7 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
                 Arrays.asList(getReferenceableId(cssNsiColumn), getReferenceableId(myLookCaColumn)));
 
         Referenceable contentsCf = new Referenceable(HBASE_COLUMN_FAMILY_TYPE);
-        contentsCf.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.contents@" + clusterName);
+        contentsCf.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, contentsCfName);
         contentsCf.set(AtlasClient.NAME, "contents");
         contentsCf.set(AtlasClient.DESCRIPTION, "The contents column family that stores the crawled content");
         contentsCf.set(AtlasClient.OWNER, "crawler");
