@@ -18,4 +18,8 @@ public interface AtlasDemoConstants {
     String TABLE_ATTRIBUTE_COLUMN_FAMILIES = "columnFamilies";
     String REPLICATION_SCHEDULE = "replicationSchedule";
     String REPLICATION_ENABLED = "replicationEnabled";
+
+    String PUBLIC_DATA_TRAIT_DEFINITION = "PublicData";
+    String RETAINABLE_TRAIT_DEFINITION = "Retainable";
+    String RETENTION_PERIOD_ATTRIBUTE_TYPE = "retentionPeriod";
 }
