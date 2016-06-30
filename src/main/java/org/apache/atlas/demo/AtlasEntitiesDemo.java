@@ -4,7 +4,6 @@ import org.apache.atlas.AtlasClient;
 import org.apache.atlas.AtlasServiceException;
 import org.apache.atlas.typesystem.Referenceable;
 import org.apache.atlas.typesystem.json.InstanceSerialization;
-import org.apache.atlas.typesystem.persistence.Id;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 
@@ -67,9 +66,9 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         referenceable.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, processName);
         referenceable.set(AtlasClient.NAME, processName);
         referenceable.set(AtlasClient.PROCESS_ATTRIBUTE_INPUTS,
-                Arrays.asList(getReferenceableId(localTableId, HBASE_TABLE_TYPE)));
+                Arrays.asList(Utils.getReferenceableId(localTableId, HBASE_TABLE_TYPE)));
         referenceable.set(AtlasClient.PROCESS_ATTRIBUTE_OUTPUTS,
-                Arrays.asList(getReferenceableId(remoteTableId, HBASE_TABLE_TYPE)));
+                Arrays.asList(Utils.getReferenceableId(remoteTableId, HBASE_TABLE_TYPE)));
         referenceable.set(REPLICATION_ENABLED, true);
         referenceable.set(REPLICATION_SCHEDULE, "daily");
 
@@ -124,63 +123,13 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
     private String createTable(String namespaceId, String clusterName, String tableName, String contentsCfName)
             throws AtlasServiceException, JSONException {
         System.out.println("Creating Table, Column Family & Column entities");
-        Referenceable cssNsiColumn = new Referenceable(HBASE_COLUMN_TYPE);
-        cssNsiColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor.cssnsi@" + clusterName);
-        cssNsiColumn.set(AtlasClient.NAME, "cssnsi");
-        cssNsiColumn.set(AtlasClient.OWNER, "crawler");
-        cssNsiColumn.set(COLUMN_ATTRIBUTE_TYPE, "string");
+        List<Referenceable> tableEntities = Utils.createTableEntities(clusterName, contentsCfName,
+                tableName, namespaceId);
 
-        Referenceable myLookCaColumn = new Referenceable(HBASE_COLUMN_TYPE);
-        myLookCaColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor.mylookca@" + clusterName);
-        myLookCaColumn.set(AtlasClient.NAME, "mylookca");
-        myLookCaColumn.set(AtlasClient.OWNER, "crawler");
-        myLookCaColumn.set(COLUMN_ATTRIBUTE_TYPE, "string");
-
-        Referenceable htmlColumn = new Referenceable(HBASE_COLUMN_TYPE);
-        htmlColumn.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.contents.html@" + clusterName);
-        htmlColumn.set(AtlasClient.NAME, "html");
-        htmlColumn.set(AtlasClient.OWNER, "crawler");
-        htmlColumn.set(COLUMN_ATTRIBUTE_TYPE, "byte[]");
-
-        Referenceable anchorCf = new Referenceable(HBASE_COLUMN_FAMILY_TYPE);
-        anchorCf.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default.webtable.anchor@" + clusterName);
-        anchorCf.set(AtlasClient.NAME, "anchor");
-        anchorCf.set(AtlasClient.DESCRIPTION, "The anchor column family that stores all links");
-        anchorCf.set(AtlasClient.OWNER, "crawler");
-        anchorCf.set(CF_ATTRIBUTE_VERSIONS, 3);
-        anchorCf.set(CF_ATTRIBUTE_IN_MEMORY, true);
-        anchorCf.set(CF_ATTRIBUTE_COMPRESSION, "zip");
-        anchorCf.set(CF_ATTRIBUTE_BLOCK_SIZE, 128);
-
-        anchorCf.set(CF_ATTRIBUTE_COLUMNS,
-                Arrays.asList(getReferenceableId(cssNsiColumn), getReferenceableId(myLookCaColumn)));
-
-        Referenceable contentsCf = new Referenceable(HBASE_COLUMN_FAMILY_TYPE);
-        contentsCf.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, contentsCfName);
-        contentsCf.set(AtlasClient.NAME, "contents");
-        contentsCf.set(AtlasClient.DESCRIPTION, "The contents column family that stores the crawled content");
-        contentsCf.set(AtlasClient.OWNER, "crawler");
-        contentsCf.set(CF_ATTRIBUTE_VERSIONS, 1);
-        contentsCf.set(CF_ATTRIBUTE_IN_MEMORY, false);
-        contentsCf.set(CF_ATTRIBUTE_COMPRESSION, "lzo");
-        contentsCf.set(CF_ATTRIBUTE_BLOCK_SIZE, 1024);
-        contentsCf.set(CF_ATTRIBUTE_COLUMNS, Arrays.asList(getReferenceableId(htmlColumn)));
-
-        Referenceable webTable = new Referenceable(HBASE_TABLE_TYPE);
-        webTable.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, tableName);
-        webTable.set(AtlasClient.NAME, "webtable");
-        webTable.set(AtlasClient.DESCRIPTION, "Table that stores crawled information");
-        webTable.set(TABLE_ATTRIBUTE_IS_ENABLED, true);
-        webTable.set(TABLE_ATTRIBUTE_NAMESPACE, getReferenceableId(namespaceId, HBASE_NAMESPACE_TYPE));
-        webTable.set(TABLE_ATTRIBUTE_COLUMN_FAMILIES, Arrays.asList(anchorCf, contentsCf));
-
-        List<Referenceable> entities =
-                Arrays.asList(cssNsiColumn, myLookCaColumn, htmlColumn, anchorCf, contentsCf, webTable);
-
-        JSONArray entitiesJson = new JSONArray(entities.size());
+        JSONArray entitiesJson = new JSONArray(tableEntities.size());
 
         System.out.print("[");
-        for (Referenceable entity : entities) {
+        for (Referenceable entity : tableEntities) {
             String entityJson = InstanceSerialization.toJson(entity, true);
             System.out.print(entityJson);
             System.out.println(",");
@@ -188,7 +137,7 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         }
         System.out.println("]");
 
-        List<String> entitiesCreated = atlasClient.createEntity(entities);
+        List<String> entitiesCreated = atlasClient.createEntity(tableEntities);
         for (String entity : entitiesCreated) {
             System.out.println("Entity created: " + entity);
         }
@@ -196,22 +145,10 @@ public class AtlasEntitiesDemo implements AtlasDemoConstants {
         return entitiesCreated.get(entitiesCreated.size()-1);
     }
 
-    private Id getReferenceableId(Referenceable fullReferenceable) {
-        return getReferenceableId(fullReferenceable.getId()._getId(), fullReferenceable.getTypeName());
-    }
-
-    private Id getReferenceableId(String id, String typeName) {
-        return new Id(id, 0, typeName);
-    }
-
 
     private String createNamespace(String clusterName) throws AtlasServiceException {
         System.out.println("Creating namespace entity");
-        Referenceable hbaseNamespace = new Referenceable(HBASE_NAMESPACE_TYPE);
-        hbaseNamespace.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, "default@" + clusterName);
-        hbaseNamespace.set(AtlasClient.NAME, "default");
-        hbaseNamespace.set(AtlasClient.DESCRIPTION, "Default HBase namespace");
-        hbaseNamespace.set(AtlasClient.OWNER, "hbase_admin");
+        Referenceable hbaseNamespace = Utils.createNamespace(clusterName);
         String hbaseNamespaceJson = InstanceSerialization.toJson(hbaseNamespace, true);
         System.out.println(hbaseNamespaceJson);
 
