@@ -1,5 +1,6 @@
 package org.apache.atlas.demo;
 
+import org.apache.atlas.AtlasClient;
 import org.apache.atlas.hook.AtlasHook;
 import org.apache.atlas.notification.hook.HookNotification;
 import org.apache.atlas.typesystem.Referenceable;
@@ -26,10 +27,38 @@ public class AtlasHookDemo extends AtlasHook implements AtlasDemoConstants {
     }
 
     private void run() {
-        createEntities();
+        createEntity();
+        updateEntityInFull();
+        updateEntityPartial();
+        deleteEntity();
     }
 
-    private void createEntities() {
+    private void deleteEntity() {
+        HookNotification.HookNotificationMessage message =
+                new HookNotification.EntityDeleteRequest(KAFKA_USER_NAME, HBASE_TABLE_TYPE,
+                        AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, WEBTABLE_NAME);
+        notifyEntities(Arrays.asList(message));
+    }
+
+    private void updateEntityPartial() {
+        Referenceable updatedTableEntity = new Referenceable(HBASE_TABLE_TYPE);
+        updatedTableEntity.set(TABLE_ATTRIBUTE_IS_ENABLED, false);
+        HookNotification.HookNotificationMessage message =
+                new HookNotification.EntityPartialUpdateRequest(KAFKA_USER_NAME, HBASE_TABLE_TYPE,
+                        AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, WEBTABLE_NAME, updatedTableEntity);
+        notifyEntities(Arrays.asList(message));
+    }
+
+    private void createEntity() {
+        List<Referenceable> entities = new ArrayList<>();
+        Referenceable namespace = Utils.createNamespace(CLUSTER_NAME);
+        entities.add(namespace);
+        HookNotification.HookNotificationMessage message
+                = new HookNotification.EntityCreateRequest(KAFKA_USER_NAME, entities);
+        notifyEntities(Arrays.asList(message));
+    }
+
+    private void updateEntityInFull() {
         List<Referenceable> entities = new ArrayList<>();
         Referenceable namespace = Utils.createNamespace(CLUSTER_NAME);
         entities.add(namespace);
