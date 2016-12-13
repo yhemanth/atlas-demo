@@ -1,10 +1,10 @@
 package org.apache.atlas.demo;
 
 public interface AtlasDemoConstants {
-    String HBASE_NAMESPACE_TYPE = "dp_hbase_namespace2";
-    String HBASE_TABLE_TYPE = "dp_hbase_table2";
+    String HBASE_NAMESPACE_TYPE = "dp_hbase_namespace3";
+    String HBASE_TABLE_TYPE = "dp_hbase_table3";
     String HBASE_COLUMN_TYPE = "dp_hbase_column";
-    String HBASE_COLUMN_FAMILY_TYPE = "dp_hbase_column_family2";
+    String HBASE_COLUMN_FAMILY_TYPE = "dp_hbase_column_family3";
     String HBASE_REPLICATION_PROCESS_TYPE = "dp_hbase_replication_process";
 
     String COLUMN_ATTRIBUTE_TYPE = "type";

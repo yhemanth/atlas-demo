@@ -22,14 +22,16 @@ public class HBaseMetadataProfiler {
     private final Connection connection;
     private final Admin admin;
 
-    public HBaseMetadataProfiler() throws IOException {
+    public HBaseMetadataProfiler(String zkQuorum, String zkClientPort) throws IOException {
         Configuration conf = HBaseConfiguration.create();
+        conf.set("hbase.zookeeper.quorum", zkQuorum);
+        conf.set("hbase.zookeeper.property.clientPort", zkClientPort);
         connection = ConnectionFactory.createConnection(conf);
         admin = connection.getAdmin();
     }
 
     public static void main(String[] args) throws Exception {
-        HBaseMetadataProfiler hBaseMetadataProfiler = new HBaseMetadataProfiler();
+        HBaseMetadataProfiler hBaseMetadataProfiler = new HBaseMetadataProfiler("localhost", "3181");
         hBaseMetadataProfiler.run();
     }
 

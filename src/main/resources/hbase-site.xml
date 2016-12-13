@@ -16,8 +16,4 @@
         <name>zookeeper.znode.parent</name>
         <value>/hbase-unsecure</value>
     </property>
-    <property>
-        <name>hbase.zookeeper.property.clientPort</name>
-        <value>3181</value>
-    </property>
 </configuration>

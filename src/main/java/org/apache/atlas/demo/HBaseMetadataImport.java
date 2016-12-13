@@ -27,21 +27,23 @@ public class HBaseMetadataImport {
         this.clusterName = clusterName;
     }
     public static void main(String[] args) throws IOException, AtlasServiceException {
-        if (args.length != 4) {
+        if (args.length != 6) {
             printUsage();
             System.exit(-1);
         }
         HBaseMetadataImport hbaseMetadataImport = new HBaseMetadataImport(args[0], args[1], args[2], args[3]);
-        hbaseMetadataImport.run();
+        hbaseMetadataImport.run(args[4], args[5]);
     }
 
     private static void printUsage() {
-        System.out.println("Usage: java org.apache.atlas.demo.HBaseMetadataImport <atlasURL> <atlasUserName> <password> <clusterName>");
-        System.out.println("Example: java org.apache.atlas.demo.HBaseMetadataImport http://localhost:21000/ admin admin cl1");
+        System.out.println("Usage: java org.apache.atlas.demo.HBaseMetadataImport " +
+                "<atlasURL> <atlasUserName> <password> <clusterName> <zkConnectString> <zkPort>");
+        System.out.println("Example: java org.apache.atlas.demo.HBaseMetadataImport " +
+                "http://localhost:21000/ admin admin cl1 localhost 3181");
     }
 
-    private void run() throws IOException, AtlasServiceException {
-        HBaseMetadataProfiler hBaseMetadataProfiler = new HBaseMetadataProfiler();
+    private void run(String zkConnectString, String zkClientPort) throws IOException, AtlasServiceException {
+        HBaseMetadataProfiler hBaseMetadataProfiler = new HBaseMetadataProfiler(zkConnectString, zkClientPort);
         HBaseMetadata hBaseMetadata = hBaseMetadataProfiler.getHBaseMetadata();
         mapToAtlasEntities(hBaseMetadata);
     }
