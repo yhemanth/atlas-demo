@@ -1,0 +1,23 @@
+<configuration>
+    <property>
+        <name>hbase.rootdir</name>
+        <value>file:///Users/hyamijala/software/hbase/hbase-1.1.2/data</value>
+        <!--value>hdfs://localhost:9000/user/hyamijala/hbase</value-->
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.dataDir</name>
+        <value>/hbase/zookeeper</value>
+    </property>
+    <property>
+        <name>hbase.cluster.distributed</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>zookeeper.znode.parent</name>
+        <value>/hbase-unsecure</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.clientPort</name>
+        <value>3181</value>
+    </property>
+</configuration>

@@ -60,16 +60,12 @@ public class AtlasTypesDemo implements AtlasDemoConstants {
         System.out.println("Creating new types");
         HierarchicalTypeDefinition<ClassType> namespaceType =
                 TypesUtil.createClassTypeDef(HBASE_NAMESPACE_TYPE, ImmutableSet.of(AtlasClient.REFERENCEABLE_SUPER_TYPE, AtlasClient.ASSET_TYPE));
-        HierarchicalTypeDefinition<ClassType> columnType =
-                TypesUtil.createClassTypeDef(HBASE_COLUMN_TYPE, ImmutableSet.of(AtlasClient.REFERENCEABLE_SUPER_TYPE, AtlasClient.ASSET_TYPE),
-                    new AttributeDefinition(COLUMN_ATTRIBUTE_TYPE, DataTypes.STRING_TYPE.getName(), Multiplicity.REQUIRED, false, null));
         HierarchicalTypeDefinition<ClassType> columnFamilyType =
                 TypesUtil.createClassTypeDef(HBASE_COLUMN_FAMILY_TYPE, ImmutableSet.of(AtlasClient.REFERENCEABLE_SUPER_TYPE, AtlasClient.ASSET_TYPE),
                     new AttributeDefinition(CF_ATTRIBUTE_VERSIONS, DataTypes.INT_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
                     new AttributeDefinition(CF_ATTRIBUTE_IN_MEMORY, DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
                     new AttributeDefinition(CF_ATTRIBUTE_BLOCK_SIZE, DataTypes.INT_TYPE.getName(), Multiplicity.REQUIRED, false, null),
-                    new AttributeDefinition(CF_ATTRIBUTE_COMPRESSION, DataTypes.STRING_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
-                    new AttributeDefinition(CF_ATTRIBUTE_COLUMNS, DataTypes.arrayTypeName(HBASE_COLUMN_TYPE), Multiplicity.COLLECTION, false, null));
+                    new AttributeDefinition(CF_ATTRIBUTE_COMPRESSION, DataTypes.STRING_TYPE.getName(), Multiplicity.OPTIONAL, false, null));
         HierarchicalTypeDefinition<ClassType> tableType =
                 // In older builds, there was no Asset type, and DataSet was not extending Asset. If used with those
                 // builds, we need to define both DataSet and Asset as supertypes.
@@ -77,13 +73,9 @@ public class AtlasTypesDemo implements AtlasDemoConstants {
                     new AttributeDefinition(TABLE_ATTRIBUTE_NAMESPACE, HBASE_NAMESPACE_TYPE, Multiplicity.REQUIRED, false, null),
                     new AttributeDefinition(TABLE_ATTRIBUTE_IS_ENABLED, DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.OPTIONAL, false, null),
                     new AttributeDefinition(TABLE_ATTRIBUTE_COLUMN_FAMILIES, DataTypes.arrayTypeName(HBASE_COLUMN_FAMILY_TYPE), Multiplicity.COLLECTION, true, null));
-        HierarchicalTypeDefinition<ClassType> replicationProcessType =
-                TypesUtil.createClassTypeDef(HBASE_REPLICATION_PROCESS_TYPE, ImmutableSet.of(AtlasClient.PROCESS_SUPER_TYPE),
-                new AttributeDefinition(REPLICATION_SCHEDULE, DataTypes.STRING_TYPE.getName(), Multiplicity.REQUIRED, false, null),
-                new AttributeDefinition(REPLICATION_ENABLED, DataTypes.BOOLEAN_TYPE.getName(), Multiplicity.REQUIRED, false, null));
         TypesDef hbaseTypes = TypesUtil.getTypesDef(ImmutableList.<EnumTypeDefinition>of(), ImmutableList.<StructTypeDefinition>of(),
                 ImmutableList.<HierarchicalTypeDefinition<TraitType>>of(),
-                ImmutableList.of(namespaceType, columnType, columnFamilyType, tableType, replicationProcessType));
+                ImmutableList.of(namespaceType, columnFamilyType, tableType));
         String typesAsString = TypesSerialization.toJson(hbaseTypes);
         System.out.println(typesAsString);
 
