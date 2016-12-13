@@ -19,15 +19,25 @@ import static org.apache.atlas.demo.AtlasDemoConstants.*;
 public class HBaseMetadataImport {
 
     public static final String DEFAULT_OWNER = "admin";
-    public static final String CLUSTER_NAME = "default";
     private final AtlasClient atlasClient;
+    private final String clusterName;
 
-    public HBaseMetadataImport() {
-        atlasClient = new AtlasClient(new String[]{"http://localhost:21000/"}, new String[]{"admin", "admin"});
+    public HBaseMetadataImport(String atlasURL, String atlasUserName, String password, String clusterName) {
+        atlasClient = new AtlasClient(new String[]{atlasURL}, new String[]{atlasUserName, password});
+        this.clusterName = clusterName;
     }
     public static void main(String[] args) throws IOException, AtlasServiceException {
-        HBaseMetadataImport hbaseMetadataImport = new HBaseMetadataImport();
+        if (args.length != 4) {
+            printUsage();
+            System.exit(-1);
+        }
+        HBaseMetadataImport hbaseMetadataImport = new HBaseMetadataImport(args[0], args[1], args[2], args[3]);
         hbaseMetadataImport.run();
+    }
+
+    private static void printUsage() {
+        System.out.println("Usage: java org.apache.atlas.demo.HBaseMetadataImport <atlasURL> <atlasUserName> <password> <clusterName>");
+        System.out.println("Example: java org.apache.atlas.demo.HBaseMetadataImport http://localhost:21000/ admin admin cl1");
     }
 
     private void run() throws IOException, AtlasServiceException {
@@ -38,13 +48,13 @@ public class HBaseMetadataImport {
 
     private void mapToAtlasEntities(HBaseMetadata hBaseMetadata) throws AtlasServiceException {
         for (Namespace ns : hBaseMetadata.getNamespaces()) {
-            Referenceable namespaceReferenceable = createNamespace(CLUSTER_NAME, ns);
+            Referenceable namespaceReferenceable = createNamespace(clusterName, ns);
             String hbaseNamespaceJson = InstanceSerialization.toJson(namespaceReferenceable, true);
             List<String> createdEntities = atlasClient.createEntity(hbaseNamespaceJson);
             String namespaceId = createdEntities.get(0);
             System.out.println(String.format("Created namespace: %s with ID %s", ns.getName(), namespaceId));
             for (Table t : ns.getTables()) {
-                List<Referenceable> tableEntities = createTableEntities(CLUSTER_NAME, ns.getName(), t, namespaceId);
+                List<Referenceable> tableEntities = createTableEntities(clusterName, ns.getName(), t, namespaceId);
                 List<String> entitiesCreated = atlasClient.createEntity(tableEntities);
                 System.out.println(String.format(
                         "Create table %s with ID %s", t.getName(), entitiesCreated.get(entitiesCreated.size()-1)));
