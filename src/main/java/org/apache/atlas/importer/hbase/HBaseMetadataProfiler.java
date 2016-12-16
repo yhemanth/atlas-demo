@@ -1,9 +1,9 @@
-package org.apache.atlas.importer;
+package org.apache.atlas.importer.hbase;
 
-import org.apache.atlas.importer.hbase.ColumnFamily;
-import org.apache.atlas.importer.hbase.HBaseMetadata;
-import org.apache.atlas.importer.hbase.Namespace;
-import org.apache.atlas.importer.hbase.Table;
+import org.apache.atlas.importer.hbase.model.ColumnFamily;
+import org.apache.atlas.importer.hbase.model.HBaseMetadata;
+import org.apache.atlas.importer.hbase.model.Namespace;
+import org.apache.atlas.importer.hbase.model.Table;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;

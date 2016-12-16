@@ -1,4 +1,4 @@
-package org.apache.atlas.importer.phoenix;
+package org.apache.atlas.importer.phoenix.model;
 
 import org.apache.atlas.importer.common.Asset;
 

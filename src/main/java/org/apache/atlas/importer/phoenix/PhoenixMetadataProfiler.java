@@ -1,8 +1,8 @@
-package org.apache.atlas.importer;
+package org.apache.atlas.importer.phoenix;
 
-import org.apache.atlas.importer.phoenix.Column;
-import org.apache.atlas.importer.phoenix.PhoenixMetadata;
-import org.apache.atlas.importer.phoenix.Table;
+import org.apache.atlas.importer.phoenix.model.Column;
+import org.apache.atlas.importer.phoenix.model.PhoenixMetadata;
+import org.apache.atlas.importer.phoenix.model.Table;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

@@ -1,4 +1,4 @@
-package org.apache.atlas.importer.hbase;
+package org.apache.atlas.importer.hbase.model;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.apache.atlas.importer;
+package org.apache.atlas.importer.common;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -18,17 +18,17 @@ import org.apache.atlas.typesystem.types.utils.TypesUtil;
 
 import java.util.List;
 
-public class AtlasTypesDemo implements AtlasDemoConstants {
+public class AtlasTypeRegistrar implements AtlasTypeConstants {
 
     private final AtlasClient atlasClient;
 
-    public AtlasTypesDemo(String atlasServiceUrl) {
+    public AtlasTypeRegistrar(String atlasServiceUrl) {
         atlasClient = new AtlasClient(new String[]{atlasServiceUrl}, new String[]{"admin", "admin"});
     }
 
     public static void main(String[] args) throws AtlasServiceException {
-        AtlasTypesDemo atlasTypesDemo = new AtlasTypesDemo(args[0]);
-        atlasTypesDemo.run();
+        AtlasTypeRegistrar atlasTypeRegistrar = new AtlasTypeRegistrar(args[0]);
+        atlasTypeRegistrar.run();
     }
 
     private void run() throws AtlasServiceException {
@@ -44,7 +44,7 @@ public class AtlasTypesDemo implements AtlasDemoConstants {
         String typeJson = TypesSerialization.toJson(type);
         System.out.println("Type definition for type: " + AtlasClient.ASSET_TYPE);
         System.out.println(typeJson);
-        Utils.printDelimiter();
+        printDelimiter();
     }
 
     private List<String> listTypes() throws AtlasServiceException {
@@ -53,7 +53,7 @@ public class AtlasTypesDemo implements AtlasDemoConstants {
         for (String type : types) {
             System.out.println("Type: " + type);
         }
-        Utils.printDelimiter();
+        printDelimiter();
         return types;
     }
 
@@ -112,6 +112,10 @@ public class AtlasTypesDemo implements AtlasDemoConstants {
         for (String typeCreated : typesCreated) {
             System.out.println("TypeCreated: " + typeCreated);
         }
-        Utils.printDelimiter();
+        printDelimiter();
+    }
+
+    public static void printDelimiter() {
+        System.out.println("============================================");
     }
 }

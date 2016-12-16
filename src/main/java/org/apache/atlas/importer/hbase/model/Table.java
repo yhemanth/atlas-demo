@@ -1,6 +1,7 @@
-package org.apache.atlas.importer.hbase;
+package org.apache.atlas.importer.hbase.model;
 
 import org.apache.atlas.importer.common.Asset;
+import org.apache.atlas.importer.hbase.model.ColumnFamily;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,11 @@
-package org.apache.atlas.importer;
+package org.apache.atlas.importer.phoenix;
 
 import org.apache.atlas.AtlasClient;
 import org.apache.atlas.AtlasServiceException;
 import org.apache.atlas.importer.common.AtlasReferenceableBuilder;
-import org.apache.atlas.importer.phoenix.Column;
-import org.apache.atlas.importer.phoenix.PhoenixMetadata;
-import org.apache.atlas.importer.phoenix.Table;
+import org.apache.atlas.importer.phoenix.model.Column;
+import org.apache.atlas.importer.phoenix.model.PhoenixMetadata;
+import org.apache.atlas.importer.phoenix.model.Table;
 import org.apache.atlas.typesystem.Referenceable;
 
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.atlas.importer.AtlasDemoConstants.*;
+import static org.apache.atlas.importer.common.AtlasTypeConstants.*;
 
 public class PhoenixMetadataImport {
 

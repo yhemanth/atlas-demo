@@ -1,4 +1,4 @@
-package org.apache.atlas.importer.phoenix;
+package org.apache.atlas.importer.phoenix.model;
 
 import java.util.ArrayList;
 import java.util.List;
