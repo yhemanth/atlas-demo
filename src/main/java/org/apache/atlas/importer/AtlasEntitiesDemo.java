@@ -1,4 +1,4 @@
-package org.apache.atlas.demo;
+package org.apache.atlas.importer;
 
 import org.apache.atlas.AtlasClient;
 import org.apache.atlas.AtlasServiceException;

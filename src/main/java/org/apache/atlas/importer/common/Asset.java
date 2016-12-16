@@ -1,4 +1,4 @@
-package org.apache.atlas.demo.common;
+package org.apache.atlas.importer.common;
 
 public class Asset {
 

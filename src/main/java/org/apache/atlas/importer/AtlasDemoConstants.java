@@ -1,4 +1,4 @@
-package org.apache.atlas.demo;
+package org.apache.atlas.importer;
 
 public interface AtlasDemoConstants {
     String HBASE_NAMESPACE_TYPE = "dp_hbase_namespace3";

@@ -1,6 +1,6 @@
-package org.apache.atlas.demo.hbase;
+package org.apache.atlas.importer.hbase;
 
-import org.apache.atlas.demo.common.Asset;
+import org.apache.atlas.importer.common.Asset;
 
 import java.util.ArrayList;
 import java.util.List;

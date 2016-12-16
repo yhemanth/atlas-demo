@@ -1,12 +1,12 @@
-package org.apache.atlas.demo;
+package org.apache.atlas.importer;
 
 import org.apache.atlas.AtlasClient;
 import org.apache.atlas.AtlasServiceException;
-import org.apache.atlas.demo.common.AtlasReferenceableBuilder;
-import org.apache.atlas.demo.hbase.ColumnFamily;
-import org.apache.atlas.demo.hbase.HBaseMetadata;
-import org.apache.atlas.demo.hbase.Namespace;
-import org.apache.atlas.demo.hbase.Table;
+import org.apache.atlas.importer.common.AtlasReferenceableBuilder;
+import org.apache.atlas.importer.hbase.ColumnFamily;
+import org.apache.atlas.importer.hbase.HBaseMetadata;
+import org.apache.atlas.importer.hbase.Namespace;
+import org.apache.atlas.importer.hbase.Table;
 import org.apache.atlas.typesystem.Referenceable;
 import org.apache.atlas.typesystem.json.InstanceSerialization;
 import org.apache.atlas.typesystem.persistence.Id;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.atlas.demo.AtlasDemoConstants.*;
+import static org.apache.atlas.importer.AtlasDemoConstants.*;
 
 public class HBaseMetadataImport {
 

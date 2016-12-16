@@ -1,4 +1,4 @@
-package org.apache.atlas.demo;
+package org.apache.atlas.importer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
