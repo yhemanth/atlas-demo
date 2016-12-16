@@ -1,4 +1,4 @@
-package org.apache.atlas.demo.hbase;
+package org.apache.atlas.demo.common;
 
 public class Asset {
 

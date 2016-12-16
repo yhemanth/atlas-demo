@@ -1,5 +1,7 @@
 package org.apache.atlas.demo.hbase;
 
+import org.apache.atlas.demo.common.Asset;
+
 public class ColumnFamily extends Asset {
 
     private final int versions;

@@ -22,4 +22,10 @@ public interface AtlasDemoConstants {
     String PUBLIC_DATA_TRAIT_DEFINITION = "PublicData";
     String RETAINABLE_TRAIT_DEFINITION = "Retainable";
     String RETENTION_PERIOD_ATTRIBUTE_TYPE = "retentionPeriod";
+
+    String PHOENIX_TABLE_TYPE = "phoenix_table";
+    String PHOENIX_COLUMN_TYPE = "phoenix_column";
+    String PHOENIX_TABLE_ATTRIBUTE_COLUMNS = "columns";
+    String PHOENIX_COLUMN_DATA_TYPE = "dataType";
+    String PHOENIX_COLUMN_FAMILY_DATA_TYPE = "columnFamily";
 }

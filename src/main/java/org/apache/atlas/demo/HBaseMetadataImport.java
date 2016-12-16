@@ -2,6 +2,7 @@ package org.apache.atlas.demo;
 
 import org.apache.atlas.AtlasClient;
 import org.apache.atlas.AtlasServiceException;
+import org.apache.atlas.demo.common.AtlasReferenceableBuilder;
 import org.apache.atlas.demo.hbase.ColumnFamily;
 import org.apache.atlas.demo.hbase.HBaseMetadata;
 import org.apache.atlas.demo.hbase.Namespace;
@@ -12,7 +13,9 @@ import org.apache.atlas.typesystem.persistence.Id;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.atlas.demo.AtlasDemoConstants.*;
 
@@ -67,11 +70,12 @@ public class HBaseMetadataImport {
 
     private Referenceable createNamespace(String clusterName, Namespace ns) {
         System.out.println("Creating namespace entity");
-        Referenceable hbaseNamespace = new Referenceable(HBASE_NAMESPACE_TYPE);
-        hbaseNamespace.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, ns.getName() + "@" + clusterName);
-        hbaseNamespace.set(AtlasClient.NAME, ns.getName());
-        hbaseNamespace.set(AtlasClient.DESCRIPTION, ns.getDescription());
-        hbaseNamespace.set(AtlasClient.OWNER, DEFAULT_OWNER);
+        AtlasReferenceableBuilder atlasReferenceableBuilder = AtlasReferenceableBuilder.newAtlasReferenceableBuilder();
+        Referenceable hbaseNamespace = atlasReferenceableBuilder.
+                ofType(HBASE_NAMESPACE_TYPE).
+                withReferenceableName(ns.getName() + "@" + clusterName).
+                withAssetProperties(ns.getName(), ns.getDescription(), DEFAULT_OWNER).
+                build();
         return hbaseNamespace;
     }
 
@@ -79,26 +83,32 @@ public class HBaseMetadataImport {
         List<Referenceable> cfReferenceables = new ArrayList<>();
 
         for (ColumnFamily cf : t.getColumnFamilies()) {
-            Referenceable cfReferenceable = new Referenceable(HBASE_COLUMN_FAMILY_TYPE);
-            cfReferenceable.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, String.format(
-                    "%s.%s.%s@%s", nsName, t.getName(), cf.getName(), clusterName));
-            cfReferenceable.set(AtlasClient.NAME, cf.getName());
-            cfReferenceable.set(AtlasClient.DESCRIPTION, cf.getDescription());
-            cfReferenceable.set(AtlasClient.OWNER, DEFAULT_OWNER);
-            cfReferenceable.set(CF_ATTRIBUTE_VERSIONS, cf.getVersions());
-            cfReferenceable.set(CF_ATTRIBUTE_IN_MEMORY, cf.isInMemory());
-            cfReferenceable.set(CF_ATTRIBUTE_COMPRESSION, cf.getCompression());
-            cfReferenceable.set(CF_ATTRIBUTE_BLOCK_SIZE, cf.getBlockSize());
+            Map<String, Object> attributeProperties = new HashMap<>();
+            attributeProperties.put(CF_ATTRIBUTE_VERSIONS, cf.getVersions());
+            attributeProperties.put(CF_ATTRIBUTE_IN_MEMORY, cf.isInMemory());
+            attributeProperties.put(CF_ATTRIBUTE_COMPRESSION, cf.getCompression());
+            attributeProperties.put(CF_ATTRIBUTE_BLOCK_SIZE, cf.getBlockSize());
+
+            AtlasReferenceableBuilder atlasReferenceableBuilder = AtlasReferenceableBuilder.newAtlasReferenceableBuilder();
+            Referenceable cfReferenceable = atlasReferenceableBuilder.ofType(HBASE_COLUMN_FAMILY_TYPE).
+                    withReferenceableName(String.format("%s.%s.%s@%s", nsName, t.getName(), cf.getName(), clusterName)).
+                    withAssetProperties(cf.getName(), cf.getDescription(), DEFAULT_OWNER).
+                    withAttributeProperties(attributeProperties).
+                    build();
             cfReferenceables.add(cfReferenceable);
         }
 
-        Referenceable tableReferenceable = new Referenceable(HBASE_TABLE_TYPE);
-        tableReferenceable.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, String.format("%s.%s:%s", nsName, t.getName(), clusterName));
-        tableReferenceable.set(AtlasClient.NAME, t.getName());
-        tableReferenceable.set(AtlasClient.DESCRIPTION, t.getDescription());
-        tableReferenceable.set(TABLE_ATTRIBUTE_IS_ENABLED, t.isEnabled());
-        tableReferenceable.set(TABLE_ATTRIBUTE_NAMESPACE, getReferenceableId(namespaceId, HBASE_NAMESPACE_TYPE));
-        tableReferenceable.set(TABLE_ATTRIBUTE_COLUMN_FAMILIES, cfReferenceables);
+        Map<String, Object> tableAssetProperties = new HashMap<>();
+        tableAssetProperties.put(TABLE_ATTRIBUTE_IS_ENABLED, t.isEnabled());
+        tableAssetProperties.put(TABLE_ATTRIBUTE_NAMESPACE, getReferenceableId(namespaceId, HBASE_NAMESPACE_TYPE));
+        tableAssetProperties.put(TABLE_ATTRIBUTE_COLUMN_FAMILIES, cfReferenceables);
+
+        AtlasReferenceableBuilder atlasReferenceableBuilder = AtlasReferenceableBuilder.newAtlasReferenceableBuilder();
+        Referenceable tableReferenceable = atlasReferenceableBuilder.ofType(HBASE_TABLE_TYPE).
+                withReferenceableName(String.format("%s.%s:%s", nsName, t.getName(), clusterName)).
+                withAssetProperties(t.getName(), t.getDescription(), DEFAULT_OWNER).
+                withAttributeProperties(tableAssetProperties).
+                build();
 
         List<Referenceable> tableEntities = new ArrayList<>();
         tableEntities.addAll(cfReferenceables);
